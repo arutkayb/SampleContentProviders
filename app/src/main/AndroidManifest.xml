@@ -16,6 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="centertableinc.ed.samplecontentproviders"
+            android:multiprocess="true"
+            android:name=".data.MoviesProvider">
+
+        </provider>
     </application>
 
 </manifest>

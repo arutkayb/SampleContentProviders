@@ -10,9 +10,11 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
     static final int DATABASE_VERSION = 1;
     static final String CREATE_DB_TABLE =
             " CREATE TABLE " + MOVIES_TABLE_NAME +
-                    " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    " movie_id TEXT NOT NULL, " +
-                    " movie_name TEXT NOT NULL);";
+                    " (" +
+                    Movie._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Movie.MOVIE_ID + " TEXT NOT NULL, " +
+                    Movie.MOVIE_NAME + " TEXT NOT NULL " +
+                    ");";
 
     public MoviesDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

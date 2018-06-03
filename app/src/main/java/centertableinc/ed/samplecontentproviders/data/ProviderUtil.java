@@ -1,35 +1,49 @@
 package centertableinc.ed.samplecontentproviders.data;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
-public class ProviderUtil {
-    public static final Uri MOVIE_PROVIDER_URI;
-    static {
-        Uri.Builder builder = new Uri.Builder();
-        MOVIE_PROVIDER_URI = builder
-                .scheme("content")
-                .authority(MoviesProvider.AUTHORITY)
-                .appendPath(MoviesProvider.MOVIES_DATA)
-                .build();
-    }
+import static centertableinc.ed.samplecontentproviders.data.MoviesProvider.MOVIE_PROVIDER_URI;
 
-    public void addMovie(Context context, Movie movie){
+public class ProviderUtil {
+
+    public void insertMovie(Context context, Movie movie){
         context.getContentResolver().insert(MOVIE_PROVIDER_URI, movie.getMovieContentValues());
     }
 
-    public Movie getMovie(Context context){
-        //TODO: fill here
-        return null;
+    public Movie getMovie(Context context, String movieId){
+        Movie movie = null;
+
+        Cursor cursor = context.getContentResolver().query(MOVIE_PROVIDER_URI,
+                Movie.PROJECTION,
+                getWhereClauseForContentQuery(Movie.MOVIE_ID),
+                new String[]{movieId},
+                null);
+
+        if(cursor != null && cursor.moveToFirst())
+        {
+            String id = cursor.getString(cursor.getColumnIndex(Movie._ID));
+            String movieName = cursor.getString(cursor.getColumnIndex(Movie.MOVIE_NAME));
+
+            movie = new Movie(movieId, movieName);
+            movie.setId(id);
+        }
+
+        return movie;
     }
 
     public void deleteMovie(Context context, Movie movie){
-        context.getContentResolver().delete(MOVIE_PROVIDER_URI,
-                getWhereClauseForContentQuery(Movie.MOVIE_ID),
-                new String[]{movie.getMovieContentValues().get(Movie.MOVIE_ID).toString()});
+        deleteMovie(context, movie.getMovieContentValues().get(Movie.MOVIE_ID).toString());
     }
 
-    private String getWhereClauseForContentQuery(String columnName){
+    public void deleteMovie(Context context, String movieId){
+        context.getContentResolver().delete(MOVIE_PROVIDER_URI,
+                getWhereClauseForContentQuery(Movie.MOVIE_ID),
+                new String[]{movieId});
+    }
+
+    public static String getWhereClauseForContentQuery(String columnName){
         return columnName + "=?";
     }
 
